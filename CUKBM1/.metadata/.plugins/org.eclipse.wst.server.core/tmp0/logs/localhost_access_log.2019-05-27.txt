@@ -1,0 +1,13 @@
+127.0.0.1 - - [27/May/2019:16:29:30 +0900] "GET / HTTP/1.1" 404 1115
+0:0:0:0:0:0:0:1 - - [27/May/2019:16:29:33 +0900] "GET /CUKBM1/servlet/web.BoardListServlet HTTP/1.1" 404 1158
+127.0.0.1 - - [27/May/2019:16:31:28 +0900] "GET / HTTP/1.1" 404 1115
+0:0:0:0:0:0:0:1 - - [27/May/2019:16:31:29 +0900] "GET /CUKBM1/servlet/web.BoardListServlet HTTP/1.1" 404 1158
+127.0.0.1 - - [27/May/2019:16:32:25 +0900] "GET / HTTP/1.1" 404 1115
+0:0:0:0:0:0:0:1 - - [27/May/2019:16:32:30 +0900] "GET /CUKBM1/Board HTTP/1.1" 200 483
+0:0:0:0:0:0:0:1 - - [27/May/2019:16:32:33 +0900] "GET /CUKBM1/BoardTemplate.jsp?BODY_PATH=BoardItemView.jsp?SEQ_NO=4 HTTP/1.1" 200 664
+0:0:0:0:0:0:0:1 - - [27/May/2019:16:32:36 +0900] "GET /CUKBM1/BoardTemplate.jsp?BODY_PATH=Board HTTP/1.1" 500 495
+0:0:0:0:0:0:0:1 - - [27/May/2019:16:32:39 +0900] "GET /CUKBM1/BoardTemplate.jsp?BODY_PATH=BoardInput.html HTTP/1.1" 200 698
+0:0:0:0:0:0:0:1 - - [27/May/2019:16:32:49 +0900] "GET /CUKBM1/BoardTemplate.jsp HTTP/1.1" 200 380
+0:0:0:0:0:0:0:1 - - [27/May/2019:16:32:51 +0900] "GET /CUKBM1/BoardTemplate.jsp?BODY_PATH=BoardInput.html HTTP/1.1" 200 698
+0:0:0:0:0:0:0:1 - - [27/May/2019:16:32:53 +0900] "GET /CUKBM1/BoardTemplate.jsp?BODY_PATH=Board HTTP/1.1" 500 495
+0:0:0:0:0:0:0:1 - - [27/May/2019:16:32:55 +0900] "GET /CUKBM1/BoardTemplate.jsp?BODY_PATH=BoardItemView.jsp?SEQ_NO=4 HTTP/1.1" 200 664

@@ -1,0 +1,3 @@
+INDEX VERSION 1.131
+C:\CUKBM1\.metadata\.plugins\org.eclipse.jst.jsp.core\jspsearch\2477241320.index
+\CUKBM1\src

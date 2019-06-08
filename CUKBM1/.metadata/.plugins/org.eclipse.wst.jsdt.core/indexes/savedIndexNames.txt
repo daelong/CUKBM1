@@ -1,0 +1,8 @@
+INDEX VERSION 1.4+C:\CUKBM1\.metadata\.plugins\org.eclipse.wst.jsdt.core\indexes
+4143361363.index
+723833636.index
+553387369.index
+3946158840.index
+3883994241.index
+2630031988.index
+2477241320.index

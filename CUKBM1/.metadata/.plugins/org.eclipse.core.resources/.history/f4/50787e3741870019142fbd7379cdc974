@@ -1,0 +1,56 @@
+package web;
+
+import javax.servlet.http.*;
+import javax.servlet.*;
+import java.io.*;
+import java.sql.*;
+
+public class LikeServlet extends HttpServlet {
+   
+   protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+      HttpSession session = request.getSession();
+      String id = (String)session.getAttribute("LOGIN_ID"); //사용자 id
+      if(id==null)
+         throw new ServletException("회원 정보가 없습니다.");
+      int sequence = Integer.parseInt(request.getParameter("seqno")); //좋아요 할 글 번호
+      Connection conn = null;
+      Statement stmt = null;
+      String title=null;
+      try {
+         Class.forName("com.mysql.jdbc.Driver");
+         conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/cukbm?serverTimezone=UTC", "root", "wjddms97");
+         if(conn==null)
+            throw new ServletException("데이터베이스에 연결할 수 없습니다.");
+         stmt = conn.createStatement();
+         ResultSet rs = stmt.executeQuery("select title from boarddb where seqno="+sequence+";");
+         if(rs.next()) {
+            title = rs.getString("title");
+         }
+         int rowNum = stmt.executeUpdate("insert into likedb values(null,'"+id+"',"+sequence+",'"+title+"');");
+         if(rowNum<1)
+            throw new Exception("데이터를 db에 입력할 수 없습니다.");
+         rowNum = stmt.executeUpdate("update boarddb set heart = heart+1 where seqno="+sequence+";");
+         if(rowNum<1)
+            throw new Exception("데이터를 db에 입력할 수 없습니다.");
+         RequestDispatcher dispatcher = request.getRequestDispatcher("ex.jsp");
+         dispatcher.forward(request, response);
+         
+      }
+      catch(Exception e) {
+         throw new ServletException(e);
+      }
+      finally {
+         try {
+            stmt.close();
+         }
+         catch(Exception ignored){
+         }
+         try {
+            conn.close();
+         }
+         catch(Exception ignored){
+         }
+      }
+   }
+
+}

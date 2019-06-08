@@ -1,0 +1,116 @@
+package web;
+
+import java.io.IOException;
+import java.sql.*;
+
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import member.PostMemberVO;
+
+public class AttendServlet extends HttpServlet{
+	private static final long serialVersionUID = 1L;
+	public void doPost(HttpServletRequest request, HttpServletResponse response) throws
+	IOException, ServletException {
+		request.setCharacterEncoding("euc-kr");
+		
+		HttpSession session = request.getSession();
+		String user = (String) session.getAttribute("LOGIN_ID");
+		int postno = Integer.parseInt(request.getParameter("seqno"));
+		request.setAttribute("postno", postno);
+		
+		RequestDispatcher dispatcher1 = null;
+		RequestDispatcher dispatcher2 = null;
+		Connection conn = null;
+		Statement stmt0= null;
+		Statement stmt1 = null; 
+		Statement stmt2 = null;
+
+		ResultSet rs1 = null;
+		
+		PostMemberVO postmember = readDB(postno);
+		request.setAttribute("PostMember", postmember);
+		RequestDispatcher dispatcher = request.getRequestDispatcher("BoardItemView.jsp");
+		dispatcher.forward(request, response);
+		
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+			conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/cukbm?serverTimezone=UTC", "root", "root");
+			stmt0 = conn.createStatement();
+			stmt1 = conn.createStatement();
+			stmt2 = conn.createStatement();
+			
+			// 
+			rs1 = stmt1.executeQuery("SELECT * FROM boarddb WHERE seqno="+postno+";");
+			if(rs1.next()) {
+				int attend_min = rs1.getInt("attend_min");
+				int attend_max = rs1.getInt("attend_max");
+				int close = rs1.getInt("close");
+				if(close==1 || attend_min>=attend_max) {
+					int rowNum = stmt0.executeUpdate("UPDATE boarddb SET close = 1 WHERE seqno = "+postno+";");
+					if(rowNum<1)
+						throw new Exception("데이터를 DB에 입력할 수 없습니다.");
+					dispatcher1 = request.getRequestDispatcher("attend_FAIL.jsp");
+					dispatcher1.forward(request, response);
+				}
+				else {
+					String command0 = String.format("INSERT INTO postdb(postno, user) VALUES (%s,'%s');", postno, user);
+					int rowNum = stmt0.executeUpdate(command0);
+					if(rowNum<1)
+						throw new Exception("데이터를 DB에 입력할 수 없습니다.");
+					String command1 = String.format("UPDATE boarddb SET attend_min = attend_min+1 WHERE seqno = %d", postno);	//현재 방에 현재인원+1
+					int rowNum1 = stmt1.executeUpdate(command1);
+					if(rowNum1<1)
+						throw new Exception("DB에 입력불가");
+					dispatcher1 = request.getRequestDispatcher("attend_SUCCESS.jsp");
+					dispatcher1.forward(request, response);
+				}
+			}
+//			dispatcher2 = request.getRequestDispatcher("PostMember");
+//			dispatcher2.forward(request, response);
+			
+		} catch(Exception e) {
+			System.out.println(e);
+		} finally {
+			try {
+				stmt0.close();
+				stmt1.close();
+				stmt2.close();
+			} catch (Exception e) {}
+			try {
+				conn.close();
+			} catch (Exception e) {}
+		}
+	}
+	private PostMemberVO readDB(int seqno) throws ServletException {
+		PostMemberVO pm = new PostMemberVO();
+		Connection conn = null;
+		Statement stmt = null;
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+			conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/cukbm?serverTimezone=UTC", "root", "root");
+			if(conn==null)
+				throw new Exception("데이터베이스에 연결할 수 없습니다.");
+			stmt=conn.createStatement();
+			ResultSet rs = stmt.executeQuery("SELECT user FROM postdb WHERE postno = "+seqno+";");
+			if(rs.next()) {
+				pm.setUser(seqno, rs.getString("user"));
+			}
+		} catch(Exception e) {
+			throw new ServletException(e);
+		} finally {
+			try {
+				stmt.close();
+			} catch(Exception e) {}
+			try {
+				conn.close();
+			} catch(Exception e) {}
+		}
+		return pm;
+	}	
+}
+}

@@ -1,0 +1,67 @@
+package web;
+
+import java.io.*; 
+import javax.servlet.*;
+import javax.servlet.http.*;
+import java.sql.*;
+import member.BoardItem;
+import member.UserInfo;
+
+public class BoardItemServlet extends HttpServlet{
+	public void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws IOException, ServletException {		
+		BoardItem item = new BoardItem();
+		Userinfo user = new Userinfo();
+		int seqno = Integer.parseInt(request.getParameter("SEQ_NO"));
+		String title = request.getParameter("TITLE");
+		HttpSession session = request.getSession();
+		String id = (String)session.getAttribute("LOGIN_ID"); //id세션 받는거 해야함
+		Connection conn = null;
+		Statement stmt = null;
+		Statement stmt1 = null;
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+			conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/webdb?serverTimezone=UTC", "root", "root");
+			if(conn == null)
+				throw new Exception("데이터베이스에 연결할 수 없습니다.");
+			stmt = conn.createStatement();
+			stmt1 = conn.createStatement();
+			ResultSet rs = stmt.executeQuery("select * from boarddb where seqno = " + seqno + ";");
+			ResultSet re1 = stmt.executeQuery("select photo from userinfo where id = " + id + ";");
+			if(rs.next()) {
+				item.setTitle(rs.getString("title"));
+				item.setContent(rs.getString("content"));
+				item.setWriter(rs.getString("writer"));
+				item.setDate(rs.getString("date"));
+				item.setHeart(rs.getInt("heart"));				
+				/*
+				request.setAttribute("title", title);
+				request.setAttribute("content", rs.getString("content"));
+				request.setAttribute("writer", rs.getString("writer"));
+				request.setAttribute("date", rs.getString("date"));
+				request.setAttribute("seqno", rs.getInt("seqno"));
+				request.setAttribute("id", id);
+				*/
+			}
+			request.setAttribute("boardItem", item);
+			request.setAttribute("SEQ_NO", seqno);
+		}
+		catch(Exception e) {
+			throw new ServletException(e);
+		}
+		finally {
+			try {
+				stmt.close();
+			}
+			catch(Exception ignored	) {
+			}
+			try {
+				conn.close();
+			}
+			catch(Exception ignored) {
+			}
+		}
+		RequestDispatcher dispatcher = request.getRequestDispatcher("BoardItemView.jsp?SEQ_NO="+seqno+"&TITLE="+title);
+		dispatcher.forward(request, response);
+	}
+}
