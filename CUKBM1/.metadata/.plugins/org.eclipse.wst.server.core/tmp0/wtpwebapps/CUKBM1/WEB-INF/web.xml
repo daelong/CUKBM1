@@ -1,9 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd" id="WebApp_ID" version="4.0">
-  <display-name>CUKBM1</display-name>
   <servlet>
     <servlet-name>mypageServlet</servlet-name>
     <servlet-class>web.MyPageServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>memberpageServlet</servlet-name>
+    <url-pattern>/memberPage</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>memberpageServlet</servlet-name>
+    <servlet-class>web.MemberPageServlet</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>mypageServlet</servlet-name>
@@ -103,7 +110,7 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>Block-servlet</servlet-name>
-    <url-pattern>/Block</url-pattern>
+    <url-pattern>/block</url-pattern>
   </servlet-mapping>
   <servlet>
     <servlet-name>order-list-servlet</servlet-name>
@@ -122,20 +129,52 @@
     <url-pattern>/forcedExit</url-pattern>
   </servlet-mapping>
   <servlet>
-    <servlet-name>alarm-servlet</servlet-name>
-    <servlet-class>web.AlarmServlet</servlet-class>
+    <servlet-name>msgreceive-servlet</servlet-name>
+    <servlet-class>web.msgReceiveServlet</servlet-class>
   </servlet>
   <servlet-mapping>
-    <servlet-name>alarm-servlet</servlet-name>
-    <url-pattern>/alarm</url-pattern>
+    <servlet-name>msgreceive-servlet</servlet-name>
+    <url-pattern>/msgReceive</url-pattern>
   </servlet-mapping>
-  
   <servlet>
-    <servlet-name>alarm-read-servlet</servlet-name>
-    <servlet-class>web.AlarmReadServlet</servlet-class>
+    <servlet-name>free-servlet</servlet-name>
+    <servlet-class>web.FreeListServlet</servlet-class>
   </servlet>
   <servlet-mapping>
-    <servlet-name>alarm-read-servlet</servlet-name>
-    <url-pattern>/alarmread</url-pattern>
+    <servlet-name>free-servlet</servlet-name>
+    <url-pattern>/freeBoard</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>free-write-servlet</servlet-name>
+    <servlet-class>web.FreeWriteServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>free-write-servlet</servlet-name>
+    <url-pattern>/freeWrite</url-pattern>
+  </servlet-mapping>
+  <servlet>
+  	<servlet-name>msgdelete-servlet</servlet-name>
+  	<servlet-class>web.msgDeleteServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+  	<servlet-name>msgdelete-servlet</servlet-name>
+  	<url-pattern>/msgDelete</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+  	<servlet-name>free-item-servlet</servlet-name>
+  	<servlet-class>web.FreeItemServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+  	<servlet-name>free-item-servlet</servlet-name>
+  	<url-pattern>/freeItem</url-pattern>
+  </servlet-mapping>
+  <servlet>
+  	<servlet-name>like-delete-servlet</servlet-name>
+  	<servlet-class>web.LikeDeleteServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+  	<servlet-name>like-delete-servlet</servlet-name>
+  	<url-pattern>/likeDelete</url-pattern>
   </servlet-mapping>
 </web-app>

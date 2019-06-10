@@ -13,19 +13,13 @@ public class OrderByLikeServlet extends HttpServlet {
 	                  throws IOException, ServletException {
 		String subject = request.getParameter("SUBJECT");
 		int team = Integer.parseInt(request.getParameter("TEAM"));
-		String strUpperSeqNo = request.getParameter("LAST_SEQ_NO");
-		int upperSeqNo;
-		if (strUpperSeqNo == null)
-			upperSeqNo = Integer.MAX_VALUE;
-		else
-			upperSeqNo = Integer.parseInt(strUpperSeqNo);
-		BoardList list = readDB(upperSeqNo,subject, team);
+		BoardList list = readDB(subject, team);
 		request.setAttribute("Board_List", list);
 		RequestDispatcher dispatcher = request.getRequestDispatcher("OrderedBoardListView.jsp"); //13-7 경로명
 		dispatcher.forward(request, response);
 	}
 
-	private BoardList readDB(int upperSeqNo, String subject, int team) 
+	private BoardList readDB(String subject, int team) 
 		throws ServletException{
 		BoardList list = new BoardList();
 		Connection conn = null;
@@ -37,10 +31,8 @@ public class OrderByLikeServlet extends HttpServlet {
 				throw new Exception("데이터베이스에 연결할 수 없습니다.");
 			stmt = conn.createStatement();
 			 ResultSet rs = stmt.executeQuery(
-		               "select * from boarddb where seqno <" +
-		               upperSeqNo + " AND subject= '" + subject + "' AND team = "+team+" order by heart desc;"); //" order by seqno desc;"
-			
-			for (int cnt = 0; cnt < 5; cnt++) {
+		               "select * from boarddb where subject= '" + subject + "' AND team = "+team+" order by heart desc;");
+			for (int cnt = 0; cnt < 30; cnt++) {
 				if(!rs.next())
 					break;
 				list.setSeqNo(cnt, rs.getInt("seqno"));
@@ -52,9 +44,8 @@ public class OrderByLikeServlet extends HttpServlet {
 				list.setAttend_max(cnt, rs.getInt("attend_max"));
 				list.setAttend_min(cnt, rs.getInt("attend_min"));
 				list.setMaster(cnt, rs.getInt("master"));
+				
 			}
-			if (!rs.next())
-				list.setLastPage(true);
 		}
 		catch (Exception e) {
 			throw new ServletException(e);

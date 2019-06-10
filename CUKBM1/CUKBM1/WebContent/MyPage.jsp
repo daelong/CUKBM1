@@ -4,160 +4,9 @@
 <!DOCTYPE html>
 <html>
 <head>
+<link href="css/mypage.css" type="text/css" rel="stylesheet">
 <meta charset="EUC-KR">
 <title>MYPAGE</title>
-<style>
-@import url('https://fonts.googleapis.com/css?family=Passion+One:400,700&display=swap');
-@import url('https://fonts.googleapis.com/css?family=Comfortaa&display=swap');
-* {
-  box-sizing: border-box;
-  text-rendering: optimizeLegibility;
-  font-kerning: auto;
-}
-html {
-  font-size: 10pt;
-  line-height: 1.4;
-  font-weight: 400;
-  font-family: 'Source Sans Pro', 'Open Sans', Roboto, 'HelveticaNeue-Light', 'Helvetica Neue Light', 'Helvetica Neue', 'Myriad Pro', 'Segoe UI', Myriad, Helvetica, 'Lucida Grande', 'DejaVu Sans Condensed', 'Liberation Sans', 'Nimbus Sans L', Tahoma, Geneva, Arial, sans-serif;
-}
-body {
-  margin: 0;
-  background: #eee;
-}
-section {
-  height: 30vh;
-  background-image: url("img/front/pic6_1.jpg");
-  background-repeat: no-repeat;
-  background-size: cover;
-  font-family: 'Passion One', cursive;
-}
-header {
-  width: 100%;
-  padding: 1em;
-  font-size: 140%;
-  position: absolute;
-  top: 30vh;
-  left: 0;
-  transition: opacity .2s ease-in-out;
-  text-align: center;
-}
-
-nav a {
-  display: inline-block;
-  outline: none;
-  text-decoration: none;
-  opacity: .7;
-  padding: 0 .5em;
-  color: black;
-  transition: opacity .2s ease-in-out;
-}
-nav a:hover, nav a:focus {
-  opacity: 1;
-}
-article {
-  margin: 5em auto 0;
-  padding: 1em;
-  font-size: 140%;
-  max-width: 1200px;
-  background: white;
-  box-shadow: rgba(0,0,0,.05) 0 3px 15px;
-}
-
-@media (min-width: 500px) {
-  header {
-    text-align: left;
-  }
-  nav {
-    float: right;
-  }
-  article {
-    margin: 3.5em auto 0;
-    padding: 2em;
-  }
-}
-@media (min-width: 800px) {
-  article {
-    margin: 3.5em auto;
-  }
-}
-div.logo{
-	margin: 0;
-  	font-size: 600%;
-  	text-align: center;
- 	line-height: 1;
- 	padding-top: 80px;
- 	display: block;
-  	font-weight: 400;
-  	color: #fff;
-  	letter-spacing: 4px;
-}
-div.et{
-	height: 150px;
-}
-div.out{
-	position: relative;
-	margin-left: 470px;
-}
-h3{
-color: #445263; 
-font-family: 'Comfortaa'; 
-text-shadow: -.030em .030em #FFF6E6, -.08em .08em #E7DCD7;
-font-size: 43px;
-}
-
-hr{
-	height: 3px;
-	background: black;
-	opacity: 0.7;
-}
-table.myinfo{
-	position:relative;
-	right:10%;
-}
-td{
-	font-weight:600;
-	width: 260px;
-	vertical-align:middle;
-	color:#5a5958;
-	padding: 5px 15px;
-}
-
-td.tag{
-	border-bottom: 3px solid #f6d36f;
-	background-color:white;
-	text-align:center;
-	font-weight:600;
-	width:100px;
-	font-size:17px;
-	padding:5px 15px;
-	color:#5a5958;
-}
-table.like{
-	text-align : center;
-	position:relative;
-	right:20%;
-}
-td.like_title{
-	width:500px;
-	color:#FFAB91;
-	font-family: 'Comfortaa'; 
-text-shadow: -.030em .030em #FFF6E6, -.08em .08em #E7DCD7;
-font-size: 35px;
-	padding-top:30px;
-	padding-bottom: 50px;
-}
-td.like_ct{
-	background:#EFEBE9;
-	padding-bottom:10px;
-}
-td.like_ct a{
-	text-decoration:none;
-	color:#5a5958;
-}
-td.like_ct:hover{
-	background:#FFE082;
-}
-</style>
 </head>
 <body>
 	<section>
@@ -175,7 +24,8 @@ td.like_ct:hover{
 		</c:when>
 		<c:otherwise>
 			<a href="CUKBM_FrontPage.jsp">HOME</a>
-			<a href="">MYPAGE</a>
+			<a href="myPage">MYPAGE</a>
+			<a href="msgReceive"><img src='img/icon/bell.png' width=30 height=30></a>
 			<a href="logout">LOGOUT</a>		
 		</c:otherwise>
 	</c:choose>		
@@ -204,20 +54,36 @@ td.like_ct:hover{
 				<tr>
 					<td class="tag">PHONE</td><td>${phone}</td>
 				</tr>
-			</table>
-			<br><hr style="width:600px; margin-left: -200px"><br>
-			<table class="like">
 				<tr>
-					<td class="like_title">내 관심 게시글</td>
+					<td class="tag">자기소개</td><td>${pr}</td>
 				</tr>
-				<c:forEach var="cnt" begin="0" end="${Board_List.listSize-1}">
-					<tr>
-						<td class="like_ct"><a href="BoardItem?SEQ_NO=${Board_List.seqNo[cnt]}&SUBJECT=${Board_List.subject[cnt]}">${Board_List.title[cnt]}</a>
-					</tr>
-				</c:forEach>
 			</table>
 			
-			
+			<br><hr style="width:600px; margin-left: -200px"><br>
+			<div class="like_title">좋아요 &#x1f497; 게시글</div>
+			<table class="like">
+				<tr class="first">
+					<td class="ca">카테고리</td>
+					<td class="no">글번호</td>
+					<td class="tt">제목</td>
+					<td class="delete"></td>
+				</tr>
+				<c:if test="${(Board_List.listSize-1)>=0}">
+					<c:forEach var="cnt" begin="0" end="${Board_List.listSize-1}">
+     			 	<tr>
+     			 		<td class="ca">${Board_List.subject[cnt]}</td>
+         				<td class="no">${Board_List.seqNo[cnt]}</td>
+         				<td class="tt"><a href="BoardItem?SEQ_NO=${Board_List.seqNo[cnt]}&SUBJECT=${Board_List.subject[cnt]}">${Board_List.title[cnt]}</a></td>
+						<td class="delete"><a href="likeDelete?SEQ_NO=${Board_List.seqNo[cnt]}&ID=${id}">삭제</a></td>
+					</tr>
+	 				</c:forEach>
+				</c:if>	
+			</table>
+			<c:if test="${!Board_List.lastPage}">
+   			<div class="next_page">
+   				<a href='myPage?LAST_SEQ_NO=${param.LAST_SEQ_NO}'>다음페이지</a>
+   			</div>   
+			</c:if>			
 		</div>
 	</div>
 	</div>

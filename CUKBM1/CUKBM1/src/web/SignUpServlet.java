@@ -15,21 +15,40 @@ public class SignUpServlet extends HttpServlet{
 	String  AGE=request.getParameter("age");
 	String PHONE=request.getParameter("phone");	
 	String PHOTO = request.getParameter("photo");
+	String PR = request.getParameter("pr");
 	PHOTO = "img/icon/"+PHOTO+".jpg";
+	boolean IdCheck = false;
+	int result = 0;
 	
 	Connection conn =null;
 	Statement stmt =null;
+	Statement stmt1 =null;
 	
 	try {
 		Class.forName("com.mysql.jdbc.Driver");
 		conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/cukbm?serverTimezone=UTC", "root", "root");
 		if(conn==null)
 			throw new Exception("데이터베이스에 연결할 수 없습니다.");
-		stmt = conn.createStatement();
-		String command = String.format("insert into userinfo values('%s', '%s', '%s', '%s', '%s', '%s');", ID, PASSWORD, MAJOR, AGE, PHONE, PHOTO);
-		int rowNum = stmt.executeUpdate(command);
-		if(rowNum<1)
-			throw new Exception("데이터를 불러올 수 없습니다.");
+		
+		stmt1 = conn.createStatement();
+		ResultSet rs = stmt1.executeQuery("select id from userinfo where id = '" + ID + "';");
+		if(rs.next()) {
+			IdCheck = false;
+		}
+		else if(!rs.next()) { 
+			IdCheck = true;
+		}
+		if(IdCheck == true) {
+			result = 1;
+			stmt = conn.createStatement();
+			String command = String.format("insert into userinfo values('%s', '%s', '%s', '%s', '%s', '%s','%s');", ID, PASSWORD, MAJOR, AGE, PHONE, PHOTO,PR);
+			int rowNum = stmt.executeUpdate(command);
+			if(rowNum<1)
+				throw new Exception("데이터가 없습니다.");
+		}
+		else if(IdCheck == false){
+			result = 0;
+		}
 	} catch(Exception e) {
 		System.out.println(e.toString());
 	} finally {
@@ -40,7 +59,12 @@ public class SignUpServlet extends HttpServlet{
 		conn.close();
 		} catch (Exception ignored) {}
 	}
-	RequestDispatcher dispatcher = request.getRequestDispatcher("SignUpRst.jsp");
-	dispatcher.forward(request, response);
+	if(result == 1) {
+		RequestDispatcher dispatcher = request.getRequestDispatcher("SignUpRst.jsp");
+		dispatcher.forward(request, response);
+	}
+	else if(result == 0) {
+		response.sendRedirect("IdOverlapCheck.jsp");
+	}
 }
 }

@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta charset="EUC-KR">
-<title>LikeResult</title>
+<title>LikeResult-success</title>
 </head>
 <style>
 	div {

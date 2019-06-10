@@ -29,13 +29,18 @@ public class LikeServlet extends HttpServlet {
 				title = rs.getString("title");
 				subject = rs.getString("subject");
 			}
-			int rowNum = stmt.executeUpdate("insert into likedb values(null,'"+id+"',"+sequence+",'"+title+"','"+subject+"');");
-			if(rowNum<1)
-				throw new Exception("데이터를 db에 입력할 수 없습니다.");
-			rowNum = stmt.executeUpdate("update boarddb set heart = heart+1 where seqno="+sequence+";");
-			if(rowNum<1)
-				throw new Exception("데이터를 db에 입력할 수 없습니다.");
-			response.sendRedirect("LikeResult.jsp");
+			ResultSet rs1 = stmt.executeQuery("select * from likedb where like_seqno = '"+sequence+"' AND like_id = '"+id+"';");
+			if(!rs1.next()) {
+				int rowNum = stmt.executeUpdate("insert into likedb values(null,'"+id+"',"+sequence+",'"+title+"','"+subject+"');");
+				if(rowNum<1)
+					throw new Exception("데이터를 db에 입력할 수 없습니다.");
+				rowNum = stmt.executeUpdate("update boarddb set heart = heart+1 where seqno="+sequence+";");
+				if(rowNum<1)
+					throw new Exception("데이터를 db에 입력할 수 없습니다.");
+				response.sendRedirect("LikeResult.jsp");
+			} else {
+				response.sendRedirect("LikeFail.jsp");
+			}
 			
 		}
 		catch(Exception e) {

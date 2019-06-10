@@ -16,6 +16,7 @@ public class ForcedExitServlet extends HttpServlet{
 		HttpSession session = request.getSession();
 		String userCheck = (String)session.getAttribute("LOGIN_ID");	//writer
 		String writer = "";
+		String title = "";
 		int result;
 
 		Connection conn = null;
@@ -31,6 +32,7 @@ public class ForcedExitServlet extends HttpServlet{
 			ResultSet rs = stmt0.executeQuery("select * from boarddb where seqno = " + postno + ";");
 			if(rs.next()) {
 				writer = rs.getString("writer");
+				title = rs.getString("title");
 			}
 			}catch(Exception e) {
 				throw new ServletException(e);
@@ -43,17 +45,23 @@ public class ForcedExitServlet extends HttpServlet{
 					throw new Exception("데이터베이스에 연결할 수 없습니다.");
 				stmt = conn.createStatement();
 				stmt1 = conn.createStatement();
-				int rowNum = stmt.executeUpdate("delete from postdb where user='"+ user +"' AND postno=" +postno + ";");//"' AND seqno=" + seqno +
+				int rowNum = stmt.executeUpdate("insert into forcedb values('"+user+"',"+postno+");");
+				if(rowNum<1)
+		            throw new Exception("데이터를 db에 입력할 수 없습니다.");
+				rowNum = stmt.executeUpdate("insert into msgdb values(null,'"+userCheck+"','"+user+
+						"','게시글 "+postno+"번 ["+title+"] 매칭에서 강퇴당하였습니다.','강퇴');");
+				if(rowNum<1)
+		            throw new Exception("데이터를 db에 입력할 수 없습니다.");
+				if(rowNum<1)
+		            throw new Exception("데이터를 db에 입력할 수 없습니다.");
+				rowNum = stmt.executeUpdate("delete from postdb where user='"+ user +"' AND postno=" +postno + ";");
 				 if(rowNum<1)
 			            throw new Exception("데이터를 db에 입력할 수 없습니다.");
 				int rowNum1 = stmt1.executeUpdate("update boarddb set attend_min = attend_min-1 where seqno = "+postno+";");
 				if(rowNum1<1) 
 					throw new Exception("데이터를 db에 업데이트 할 수 없습니다.");
-				rowNum1 = stmt1.executeUpdate("delete from postdb where postno = "+postno+" and user = '"+user+"';");	
-		
 				result = 1;
-				RequestDispatcher dispatcher = request.getRequestDispatcher("ForcedExitResult.jsp?result="+result);
-		        dispatcher.forward(request, response);
+				response.sendRedirect("ForcedExitResult.jsp?result="+result);
 			}
 			catch(Exception e) {
 				throw new ServletException(e);

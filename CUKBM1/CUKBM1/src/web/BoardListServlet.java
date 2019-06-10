@@ -15,13 +15,18 @@ public class BoardListServlet extends HttpServlet {
 		int team = Integer.parseInt(request.getParameter("TEAM"));
 		String strUpperSeqNo = request.getParameter("LAST_SEQ_NO");
 		int upperSeqNo;
-		if (strUpperSeqNo == null)
+		int last_seq_no;
+		if (strUpperSeqNo == null || strUpperSeqNo=="") { //입력값이 없으면 int범위 최대값 사용
+			last_seq_no = Integer.MAX_VALUE;
 			upperSeqNo = Integer.MAX_VALUE;
+		}
 		else
-			upperSeqNo = Integer.parseInt(strUpperSeqNo);
+			upperSeqNo = Integer.parseInt(strUpperSeqNo); //입력값 있으면 upperSeqno = last sequence number
 		BoardList list = readDB(upperSeqNo,subject, team);
+		last_seq_no = getLastSeqNum(upperSeqNo, subject, team);
 		request.setAttribute("Board_List", list);
-		RequestDispatcher dispatcher = request.getRequestDispatcher("BoardListView.jsp"); //13-7 경로명
+		request.setAttribute("LAST_SEQ_NO",last_seq_no);
+		RequestDispatcher dispatcher = request.getRequestDispatcher("BoardListView.jsp?LAST_SEQ_NO="+last_seq_no+"&SUBJECT="+subject+"&TEAM="+team); 
 		dispatcher.forward(request, response);
 	}
 
@@ -36,11 +41,9 @@ public class BoardListServlet extends HttpServlet {
 			if(conn == null)
 				throw new Exception("데이터베이스에 연결할 수 없습니다.");
 			stmt = conn.createStatement();
-			 ResultSet rs = stmt.executeQuery(
-		               "select * from boarddb where seqno <" +
-		               upperSeqNo + " AND subject= '" + subject + "' AND team = "+team+" order by seqno desc;"); //" order by seqno desc;"
-			
-			for (int cnt = 0; cnt < 5; cnt++) {
+			 ResultSet rs = stmt.executeQuery("select * from boarddb where seqno<"+upperSeqNo+
+					 " and subject='"+subject+"' and team="+team+" order by seqno desc limit 21");
+			for (int cnt = 0; cnt < 20; cnt++) {
 				if(!rs.next())
 					break;
 				list.setSeqNo(cnt, rs.getInt("seqno"));
@@ -73,5 +76,41 @@ public class BoardListServlet extends HttpServlet {
 		}
 		return list;
 	}
-}
+	
+	private int getLastSeqNum(int upperSeqNo, String subject, int team) throws ServletException{
+		Connection conn = null;
+		Statement stmt = null;
+		int lastnum = 0;
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+			conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/cukbm?serverTimezone=UTC", "root", "root");
+			if(conn == null)
+				throw new Exception("데이터베이스에 연결할 수 없습니다.");
+			stmt = conn.createStatement();
+			 ResultSet rs = stmt.executeQuery("select seqno from boarddb where seqno<"+upperSeqNo+
+					 " and subject='"+subject+"' and team="+team+" order by seqno desc limit 20");
+			for (int cnt = 0; cnt < 20; cnt++) {
+				if(!rs.next())
+					break;
+				lastnum = rs.getInt("seqno");
+			}
+		}
+		catch (Exception e) {
+			throw new ServletException(e);
+		}
+		finally {
+			try {
+				stmt.close();
+			}
+			catch (Exception ignored) {
+			}
+			try {
+				conn.close();
+			}
+			catch(Exception ignored) {
+			}
+		}
+		return lastnum;
+	}
+	}
 
