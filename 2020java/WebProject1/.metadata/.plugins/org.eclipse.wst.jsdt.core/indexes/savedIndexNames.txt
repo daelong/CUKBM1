@@ -1,9 +1,0 @@
-INDEX VERSION 1.4+C:\2020java\WebProject1\.metadata\.plugins\org.eclipse.wst.jsdt.core\indexes
-2026713025.index
-3340904575.index
-2861475094.index
-3340904575.index
-1145522711.index
-1241889543.index
-3277155017.index
-4153955084.index

@@ -4,4 +4,7 @@
 <fullyQualifiedTypeName name="member.BoardItem"/>
 <fullyQualifiedTypeName name="member.UserInfo"/>
 <fullyQualifiedTypeName name="member.IdVO"/>
+<fullyQualifiedTypeName name="java.io.BufferedInputStream"/>
+<fullyQualifiedTypeName name="member.BBSItem"/>
+<fullyQualifiedTypeName name="member.BBSList"/>
 </qualifiedTypeNameHistroy>
